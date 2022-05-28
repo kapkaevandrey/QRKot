@@ -6,9 +6,9 @@ from .abstract_base import ProjectDonation
 
 
 class Donation(ProjectDonation):
-    user_id = Column(GUID, ForeignKey('user.id'))
+    user_id = Column(GUID, ForeignKey('user.id'), nullable=False)
     user = relationship('User', backref='donations')
-    comment = Column(Text, nullable=False)
+    comment = Column(Text, nullable=True)
 
     def __repr__(self):
         return (
