@@ -3,11 +3,12 @@ from sqlalchemy import Column, ForeignKey, Integer, Text
 from sqlalchemy.orm import relationship
 
 from .abstract_base import ProjectDonation
+from .user import UserTable
 
 
 class Donation(ProjectDonation):
     user_id = Column(GUID, ForeignKey('user.id'), nullable=False)
-    user = relationship('User', backref='donations')
+    user = relationship(UserTable, backref='donations')
     comment = Column(Text, nullable=True)
 
     def __repr__(self):
