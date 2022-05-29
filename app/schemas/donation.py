@@ -9,6 +9,10 @@ class DonationCreate(BaseModel):
     comment: Optional[str]
 
 
+class DonationUpdate(BaseModel):
+    pass
+
+
 class DonationRead(DonationCreate):
     id: int
     create_date: datetime
