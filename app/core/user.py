@@ -75,5 +75,5 @@ fastapi_users = FastAPIUsers(
     user_update_model=UserUpdate
 )
 
-current_active_user = fastapi_users.current_user(active=True)
+current_user = fastapi_users.current_user(active=True)
 current_superuser = fastapi_users.current_user(active=True, superuser=True)
