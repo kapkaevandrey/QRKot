@@ -42,9 +42,9 @@ class UserManager(BaseUserManager[UserCreate, UserRead]):
     async def validate_password(
             self, password: str, user: Union[UserCreate, UserRead]
     ) -> None:
-        if len(password) < 8:
+        if len(password) < 3:
             raise InvalidPasswordException(
-                reason="Password should be at least 8 characters"
+                reason="Password should be at least 3 characters",
             )
         if user.email in password:
             raise InvalidPasswordException(
