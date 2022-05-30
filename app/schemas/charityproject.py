@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Optional
 
-from pydantic import BaseModel, PositiveInt, Extra, Field, validator
+from pydantic import BaseModel, PositiveInt, Extra, Field, validator, root_validator
 
 
 class ProjectCreate(BaseModel):
@@ -15,10 +15,10 @@ class ProjectCreate(BaseModel):
 
 class ProjectUpdate(BaseModel):
     name: Optional[str] = Field(None, min_length=1, max_length=100)
-    description: Optional[str]
+    description: Optional[str] = Field(None)
     full_amount: Optional[PositiveInt]
 
-    @validator('name', 'full_amount', always=True)
+    @validator('name', 'full_amount')
     def value_cannot_be_none(cls, value):
         if value is None:
             raise ValueError(
@@ -35,7 +35,7 @@ class ProjectRead(ProjectCreate):
     invested_amount: int
     fully_invested: bool
     create_date: datetime
-    close_data: datetime
+    close_data: Optional[datetime]
 
     class Config:
         orm_mode = True
