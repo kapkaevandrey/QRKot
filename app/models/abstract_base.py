@@ -24,3 +24,11 @@ class ProjectDonation(Base):
     @declared_attr
     def __table_args__(cls):
         return CheckConstraint('full_amount > 0', 'full_amount_greater_than_zero'),
+
+    @property
+    def is_active(self):
+        return not self.fully_invested
+
+    def deactivate(self):
+        self.fully_invested = True
+        self.close_data = datetime.now()

@@ -42,9 +42,10 @@ class BaseCRUD(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
             self,
             obj: ModelType, data: UpdateSchemaType, session: AsyncSession
     ) -> ModelType:
-        data = data.dict()
-        [setattr(self.model, field, data[field]) for field in jsonable_encoder(obj)
+        data = data.dict(exclude_unset=True)
+        [setattr(obj, field, data[field]) for field in jsonable_encoder(obj)
          if field in data]
+        session.add(obj)
         await session.commit()
         await session.refresh(obj)
         return obj
@@ -66,3 +67,6 @@ class BaseCRUD(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         if many:
             return result.scalars().all()
         return result.scalars().first()
+
+    # TODO classmethod внедряющий в модели функцию
+    # TODO classmethod возвращающий объект proprty
