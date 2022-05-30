@@ -8,4 +8,4 @@ class CharityProject(ProjectDonation):
     description = Column(Text, nullable=True)
 
     def __repr__(self):
-        return f'Project {self.name} it remains to deposit {self.full_amount}'
+        return f'Project - "{self.name}" it remains to deposit {self.full_amount}'
