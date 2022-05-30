@@ -1,8 +1,8 @@
 """First migration
 
-Revision ID: ccd1ba24ee85
+Revision ID: 8af263981945
 Revises: 
-Create Date: 2022-05-29 21:20:47.166260
+Create Date: 2022-05-30 23:26:08.977037
 
 """
 from alembic import op
@@ -11,7 +11,7 @@ import fastapi_users_db_sqlalchemy
 
 
 # revision identifiers, used by Alembic.
-revision = 'ccd1ba24ee85'
+revision = '8af263981945'
 down_revision = None
 branch_labels = None
 depends_on = None
