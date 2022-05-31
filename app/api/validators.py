@@ -5,7 +5,7 @@ from fastapi import HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.crud.base import BaseCRUD, ModelType
-from app.models.charityproject import CharityProject
+from app.models.charity_project import CharityProject
 
 
 # подумать насчёт декорирования функции
@@ -18,7 +18,7 @@ async def check_unique_attribute(
     result = await crud_obj.get_by_attribute(attr_name, attr_value, session)
     if result is not None:
         raise HTTPException(
-            status_code=HTTPStatus.UNPROCESSABLE_ENTITY,
+            status_code=HTTPStatus.BAD_REQUEST,
             detail=f'Field {attr_name} must be unique'
         )
 
@@ -68,7 +68,7 @@ async def check_can_update_full_amount(
 ) -> None:
     if new_full_amount < project.invested_amount:
         raise HTTPException(
-            status_code=HTTPStatus.UNPROCESSABLE_ENTITY,
+            status_code=HTTPStatus.BAD_REQUEST,
             detail=(
                 f'Yoo cannot reduce the amount of the project '
                 f'below the already invested funds in the amount of '
