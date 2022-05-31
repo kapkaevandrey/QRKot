@@ -1,8 +1,8 @@
 """First migration
 
-Revision ID: 8af263981945
+Revision ID: 6d13c79f5978
 Revises: 
-Create Date: 2022-05-30 23:26:08.977037
+Create Date: 2022-06-01 00:31:35.003622
 
 """
 from alembic import op
@@ -11,7 +11,7 @@ import fastapi_users_db_sqlalchemy
 
 
 # revision identifiers, used by Alembic.
-revision = '8af263981945'
+revision = '6d13c79f5978'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -25,7 +25,7 @@ def upgrade():
     sa.Column('invested_amount', sa.Integer(), nullable=True),
     sa.Column('fully_invested', sa.Boolean(), nullable=True),
     sa.Column('create_date', sa.DateTime(), nullable=True),
-    sa.Column('close_data', sa.DateTime(), nullable=True),
+    sa.Column('close_date', sa.DateTime(), nullable=True),
     sa.Column('name', sa.String(length=100), nullable=False),
     sa.Column('description', sa.Text(), nullable=True),
     sa.CheckConstraint('full_amount > 0', name='full_amount_greater_than_zero'),
@@ -48,7 +48,7 @@ def upgrade():
     sa.Column('invested_amount', sa.Integer(), nullable=True),
     sa.Column('fully_invested', sa.Boolean(), nullable=True),
     sa.Column('create_date', sa.DateTime(), nullable=True),
-    sa.Column('close_data', sa.DateTime(), nullable=True),
+    sa.Column('close_date', sa.DateTime(), nullable=True),
     sa.Column('user_id', fastapi_users_db_sqlalchemy.guid.GUID(), nullable=False),
     sa.Column('comment', sa.Text(), nullable=True),
     sa.CheckConstraint('full_amount > 0', name='full_amount_greater_than_zero'),

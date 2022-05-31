@@ -34,8 +34,8 @@ class ProjectRead(ProjectCreate):
     id: int
     invested_amount: int
     fully_invested: bool
+    close_date: Optional[datetime]
     create_date: datetime
-    close_data: Optional[datetime]
 
     class Config:
         orm_mode = True

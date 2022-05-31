@@ -13,6 +13,7 @@ from app.api.validators import (
     try_get_object_by_attribute, check_can_update_full_amount
 )
 from app.crud.charityproject import project_crud
+from app.api.utils import investment_process
 
 router = APIRouter()
 
@@ -51,20 +52,22 @@ async def update_project(
 ) -> ProjectRead:
     project = await try_get_object_by_attribute(project_crud, 'id', project_id, session)
     await check_is_active(project)
+    attributes = {}
     if data.name is not None:
         await check_unique_attribute(project_crud, 'name', data.name, session)
     if data.full_amount is not None:
         await check_can_update_full_amount(project, data.full_amount)
         if project.invested_amount == data.full_amount:
-            project.deactivate()
-    project = await project_crud.update(project, data, session)
+            attributes['close_data'] = dt.datetime.now()
+            attributes['fully_invested'] = True
+    project = await project_crud.update(project, data, session, **attributes)
     return project
 
 
-###################### In Work
 @router.post(
     '/',
     response_model=ProjectRead,
+    response_model_exclude_none=True,
     dependencies=[Depends(current_superuser)]
 )
 async def create_project(
@@ -76,5 +79,5 @@ async def create_project(
         'name', data.name, session,
     )
     project = await project_crud.create(data=data, session=session)
-    # TODO логика инвестирования
+    await investment_process(session)
     return project

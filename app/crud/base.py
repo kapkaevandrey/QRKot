@@ -31,8 +31,11 @@ class BaseCRUD(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
 
     async def create(
             self, data: CreateSchemaType, session: AsyncSession,
+            **attributes,
     ) -> ModelType:
-        obj = self.model(**data.dict())
+        obj = self.model(
+            **{**data.dict(), **attributes}
+        )
         session.add(obj)
         await session.commit()
         await session.refresh(obj)
@@ -40,11 +43,12 @@ class BaseCRUD(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
 
     async def update(
             self,
-            obj: ModelType, data: UpdateSchemaType, session: AsyncSession
+            obj: ModelType, data: UpdateSchemaType, session: AsyncSession,
+            **attributes,
     ) -> ModelType:
-        data = data.dict(exclude_unset=True)
+        data = {**data.dict(exclude_unset=True), **attributes}
         [setattr(obj, field, data[field]) for field in jsonable_encoder(obj)
-         if field in data]
+         if field in attributes]
         session.add(obj)
         await session.commit()
         await session.refresh(obj)
@@ -58,15 +62,20 @@ class BaseCRUD(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
     async def get_by_attribute(
             self,
             attr_name: str, attr_value: str,
-            session: AsyncSession, many=False
+            session: AsyncSession,
+            order_by: str = None,
+            many=False,
+            desc=False
     ) -> Union[list[ModelType], Optional[ModelType]]:
         attr = getattr(self.model, attr_name)
-        result = await session.execute(
-            select(self.model).where(attr == attr_value)
-        )
+        select_stmt = select(self.model).where(attr == attr_value)
+        if order_by is not None:
+            order_attr = getattr(self.model, order_by)
+            if desc:
+                select_stmt = select_stmt.order_by(order_attr.desc())
+            else:
+                select_stmt = select_stmt.order_by(order_attr)
+        result = await session.execute(select_stmt)
         if many:
             return result.scalars().all()
         return result.scalars().first()
-
-    # TODO classmethod внедряющий в модели функцию
-    # TODO classmethod возвращающий объект proprty
