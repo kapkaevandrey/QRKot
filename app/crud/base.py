@@ -69,7 +69,7 @@ class BaseCRUD(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
             order_by: str = None,
             many=False,
             desc=False
-    ) -> Union[list[ModelType], Optional[ModelType]]:
+    ) -> Union[List[ModelType], Optional[ModelType]]:
         attr = getattr(self.model, attr_name)
         select_stmt = select(self.model).where(attr == attr_value)
         if order_by is not None:
