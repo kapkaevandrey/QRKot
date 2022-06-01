@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Optional
 
-from pydantic import BaseModel, PositiveInt, Extra, Field, validator, root_validator
+from pydantic import BaseModel, Extra, Field, PositiveInt, validator
 
 
 class ProjectCreate(BaseModel):
@@ -19,10 +19,10 @@ class ProjectUpdate(BaseModel):
     full_amount: Optional[PositiveInt]
 
     @validator('name', 'full_amount')
-    def value_cannot_be_none(cls, value):
+    def value_cannot_be_none(cls, value, field):
         if not value or value is None:
             raise ValueError(
-                'value cannot be None or empty'
+                f'value cannot be None'
             )
         return value
 

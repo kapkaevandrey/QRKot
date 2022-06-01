@@ -1,9 +1,7 @@
 from fastapi_users_db_sqlalchemy.guid import GUID
-from sqlalchemy import Column, ForeignKey, Integer, Text
-from sqlalchemy.orm import relationship
+from sqlalchemy import Column, ForeignKey, Text
 
 from .abstract_base import ProjectDonation
-from .user import UserTable
 
 
 class Donation(ProjectDonation):

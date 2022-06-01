@@ -1,4 +1,6 @@
-from typing import Generic, List, Optional, Type, TypeVar, Union
+from typing import (
+    Generic, List, Optional, Type, TypeVar, Union, Collection
+)
 
 from fastapi.encoders import jsonable_encoder
 from pydantic import BaseModel
@@ -36,27 +38,26 @@ class BaseCRUD(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         obj = self.model(
             **{**data.dict(), **attributes}
         )
-        print(jsonable_encoder(obj))
-        session.add(obj)
-        await session.commit()
-        await session.refresh(obj)
+        await self.save(obj, session)
         return obj
 
     async def update(
             self,
-            obj: ModelType, data: UpdateSchemaType, session: AsyncSession,
+            obj: ModelType, data: UpdateSchemaType,
+            session: AsyncSession,
             **attributes,
     ) -> ModelType:
         data = {**data.dict(exclude_unset=True), **attributes}
-        print(data)
         [setattr(obj, field, data[field]) for field in jsonable_encoder(obj)
          if field in data]
-        session.add(obj)
-        await session.commit()
-        await session.refresh(obj)
+        await self.save(obj, session)
         return obj
 
-    async def remove(self, obj: ModelType, session: AsyncSession) -> ModelType:
+    async def remove(
+            self,
+            obj: ModelType,
+            session: AsyncSession
+    ) -> ModelType:
         await session.delete(obj)
         await session.commit()
         return obj
@@ -81,3 +82,15 @@ class BaseCRUD(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         if many:
             return result.scalars().all()
         return result.scalars().first()
+
+    async def save(
+            self, obj: Union[ModelType, Collection[ModelType]],
+            session: AsyncSession,
+            many=False
+    ) -> None:
+        session.add_all(obj) if many else session.add(obj)
+        await session.commit()
+        if many:
+            [await session.refresh(single_obj) for single_obj in obj]
+        else:
+            await session.refresh(obj)
