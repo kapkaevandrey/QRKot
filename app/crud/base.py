@@ -36,6 +36,7 @@ class BaseCRUD(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         obj = self.model(
             **{**data.dict(), **attributes}
         )
+        print(jsonable_encoder(obj))
         session.add(obj)
         await session.commit()
         await session.refresh(obj)
@@ -47,8 +48,9 @@ class BaseCRUD(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
             **attributes,
     ) -> ModelType:
         data = {**data.dict(exclude_unset=True), **attributes}
+        print(data)
         [setattr(obj, field, data[field]) for field in jsonable_encoder(obj)
-         if field in attributes]
+         if field in data]
         session.add(obj)
         await session.commit()
         await session.refresh(obj)

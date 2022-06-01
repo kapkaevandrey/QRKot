@@ -26,9 +26,6 @@ class ProjectUpdate(BaseModel):
             )
         return value
 
-    class Config:
-        extra = Extra.forbid
-
 
 class ProjectRead(ProjectCreate):
     id: int
