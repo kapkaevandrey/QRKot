@@ -18,9 +18,10 @@ async def check_unique_attribute(
     if result is not None:
         raise HTTPException(
             status_code=HTTPStatus.BAD_REQUEST,
-            detail='Проект с таким именем уже существует!' # требование теста
+            detail='Проект с таким именем уже существует!'  # требование теста
         )
 # detail = f'Field {attr_name} must be unique' а так было
+
 
 async def try_get_object_by_attribute(
         crud_obj: BaseCRUD,
@@ -61,7 +62,7 @@ async def check_can_delete_project(
         )
 
 
-async def check_can_update(
+async def check_can_update_project(
         project: CharityProject,
         new_full_amount: int
 ) -> None:
