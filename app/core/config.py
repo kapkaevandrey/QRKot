@@ -1,9 +1,6 @@
 from typing import Optional
 
 from pydantic import BaseSettings, EmailStr
-from dotenv import load_dotenv
-
-load_dotenv('.env')
 
 
 class Settings(BaseSettings):

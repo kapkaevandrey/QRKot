@@ -13,7 +13,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.config import settings
 from app.core.db import get_async_session
 from app.models.user import UserTable
-from app.schemas.user import User, UserCreate, UserUpdate, UserDB
+from app.schemas.user import User, UserCreate, UserUpdate, UserRead
 
 
 ##############################################################################
@@ -34,13 +34,13 @@ auth_backend = AuthenticationBackend(
 ##############################################################################
 # User Manager configurations                                                #
 ##############################################################################
-class UserManager(BaseUserManager[UserCreate, UserDB]):
-    user_db_model = UserDB
+class UserManager(BaseUserManager[UserCreate, UserRead]):
+    user_db_model = UserRead
     reset_password_token_secret = settings.secret
     verification_token_secret = settings.secret
 
     async def validate_password(
-            self, password: str, user: Union[UserCreate, UserDB]
+            self, password: str, user: Union[UserCreate, UserRead]
     ) -> None:
         if len(password) < 3:
             raise InvalidPasswordException(
@@ -55,9 +55,8 @@ class UserManager(BaseUserManager[UserCreate, UserDB]):
 ##############################################################################
 # Depends                                                                    #
 ##############################################################################
-# Я думаю это метод должен быть в файле db.py так имеет отношение к базе данных
 async def get_user_db(session: AsyncSession = Depends(get_async_session)):
-    yield SQLAlchemyUserDatabase(UserDB, session, UserTable)
+    yield SQLAlchemyUserDatabase(UserRead, session, UserTable)
 
 
 async def get_user_manager(user_db=Depends(get_user_db)):
@@ -72,7 +71,7 @@ fastapi_users = FastAPIUsers(
     User,
     UserCreate,
     UserUpdate,
-    UserDB,
+    UserRead,
 )
 
 current_user = fastapi_users.current_user(active=True)

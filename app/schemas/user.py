@@ -13,5 +13,5 @@ class UserUpdate(models.BaseUserUpdate):
     pass
 
 
-class UserDB(models.BaseUserDB):
+class UserRead(models.BaseUserDB):
     pass
