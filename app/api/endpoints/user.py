@@ -1,6 +1,7 @@
 from http import HTTPStatus
 
 from fastapi import APIRouter, HTTPException
+from pydantic import UUID4
 
 from app.core.user import auth_backend, fastapi_users
 
@@ -27,7 +28,7 @@ router.include_router(
 
 
 @router.delete('/users/{id}', tags=['users'], deprecated=True)
-def delete_user(id: str):
+def delete_user(id: UUID4):
     """
     You don't need to delete users,
     just set the value of the is_active field to False.

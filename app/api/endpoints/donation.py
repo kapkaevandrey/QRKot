@@ -1,12 +1,17 @@
-from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi import APIRouter, Depends
 from fastapi.encoders import jsonable_encoder
+from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.crud import donation_crud
 from app.core.db import get_async_session
 from app.core.user import current_user, current_superuser
-from app.crud.donation import donation_crud
-from app.schemas.donation import DonationFullRead, DonationCreate, DonationRead
-from app.schemas.user import UserDB
+from app.api.utils import investment_process
+from app.schemas.donation import (
+    DonationCreate, DonationFullRead, DonationRead,
+)
+from app.schemas.user import UserRead
+
+
 router = APIRouter()
 
 
@@ -18,6 +23,9 @@ router = APIRouter()
 async def get_all_donations(
         session: AsyncSession = Depends(get_async_session)
 ) -> list[DonationFullRead]:
+    """
+    ___You can see all donations if you have a superpower.___
+    """
     return await donation_crud.get_multi(session)
 
 
@@ -29,8 +37,11 @@ async def get_all_donations(
 )
 async def get_user_donations(
         session: AsyncSession = Depends(get_async_session),
-        user: UserDB = Depends(current_user),
+        user: UserRead = Depends(current_user),
 ):
+    """
+    ___You can see all you donation.___
+    """
     donations = await donation_crud.get_by_attribute(
         attr_name='user_id', attr_value=user.id, session=session, many=True
     )
@@ -46,8 +57,14 @@ async def get_user_donations(
 async def create_donation(
         data: DonationCreate,
         session: AsyncSession = Depends(get_async_session),
-        user: UserDB = Depends(current_user),
+        user: UserRead = Depends(current_user),
 ) -> DonationFullRead:
-    donate = await donation_crud.create(data, session, user_id=user.id)
-    # TODO await investment_process(session)
-    return jsonable_encoder(donate)
+    """
+    ___You can make a donation.___
+    - **full_amount**: How much money you can donate for our cats
+    - **comment**: say something (optional)
+    """
+    donation = await donation_crud.create(data, session, user_id=user.id)
+    donation_id = donation.id
+    await investment_process(session)
+    return jsonable_encoder(await donation_crud.get(donation_id, session))
