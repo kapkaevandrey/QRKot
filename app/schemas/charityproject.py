@@ -22,7 +22,7 @@ class ProjectUpdate(BaseModel):
     def value_cannot_be_none(cls, value, field):
         if not value or value is None:
             raise ValueError(
-                f'value cannot be None'
+                'Value cannot be None'
             )
         return value
 
