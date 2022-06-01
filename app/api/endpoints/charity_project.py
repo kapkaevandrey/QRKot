@@ -1,3 +1,5 @@
+from typing import List
+
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -17,10 +19,10 @@ from app.schemas.charityproject import (
 router = APIRouter()
 
 
-@router.get('/', response_model=list[ProjectRead])
+@router.get('/', response_model=List[ProjectRead])
 async def get_all_projects(
         session: AsyncSession = Depends(get_async_session)
-) -> int:
+):
     """
     ___You can see all cat projects.___
     """
@@ -35,7 +37,7 @@ async def get_all_projects(
 async def delete_project(
         project_id: int,
         session: AsyncSession = Depends(get_async_session)
-) -> ProjectRead:
+):
     """
     ___You can delete project if you have a superpower.___
     """
@@ -57,7 +59,7 @@ async def update_project(
         project_id: int,
         data: ProjectUpdate,
         session: AsyncSession = Depends(get_async_session)
-) -> ProjectRead:
+):
     """
     ___You can update project if you have a superpower.___
     """
@@ -82,7 +84,7 @@ async def update_project(
 async def create_project(
         data: ProjectCreate,
         session: AsyncSession = Depends(get_async_session)
-) -> int:
+):
     """
     ___You can create project if you have a superpower.___
     - **name**: Name of the cat project

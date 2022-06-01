@@ -1,3 +1,5 @@
+from typing import List
+
 from fastapi import APIRouter, Depends
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -17,12 +19,12 @@ router = APIRouter()
 
 @router.get(
     '/',
-    response_model=list[DonationFullRead],
+    response_model=List[DonationFullRead],
     dependencies=[Depends(current_superuser)]
 )
 async def get_all_donations(
         session: AsyncSession = Depends(get_async_session)
-) -> list[DonationFullRead]:
+):
     """
     ___You can see all donations if you have a superpower.___
     """
@@ -31,7 +33,7 @@ async def get_all_donations(
 
 @router.get(
     '/my/',
-    response_model=list[DonationRead],
+    response_model=List[DonationRead],
     response_model_exclude_unset=True,
     dependencies=[Depends(current_user)]
 )
@@ -58,7 +60,7 @@ async def create_donation(
         data: DonationCreate,
         session: AsyncSession = Depends(get_async_session),
         user: UserRead = Depends(current_user),
-) -> DonationFullRead:
+):
     """
     ___You can make a donation.___
     - **full_amount**: How much money you can donate for our cats
