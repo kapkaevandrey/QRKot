@@ -8,7 +8,6 @@ from app.crud.base import BaseCRUD, ModelType
 from app.models.charity_project import CharityProject
 
 
-# подумать насчёт декорирования функции
 async def check_unique_attribute(
         crud_obj: BaseCRUD,
         attr_name: str,
@@ -19,9 +18,9 @@ async def check_unique_attribute(
     if result is not None:
         raise HTTPException(
             status_code=HTTPStatus.BAD_REQUEST,
-            detail=f'Field {attr_name} must be unique'
+            detail='Проект с таким именем уже существует!' # требование теста
         )
-
+# detail = f'Field {attr_name} must be unique' а так было
 
 async def try_get_object_by_attribute(
         crud_obj: BaseCRUD,
@@ -46,8 +45,8 @@ async def check_is_active(
 ):
     if not obj.is_active:
         raise HTTPException(
-            status_code=HTTPStatus.UNPROCESSABLE_ENTITY,
-            detail=f'This {obj} is closed'
+            status_code=HTTPStatus.BAD_REQUEST,
+            detail='Закрытый проект нельзя редактировать!'  # требование теста
         )
 
 
@@ -62,11 +61,12 @@ async def check_can_delete_project(
         )
 
 
-async def check_can_update_full_amount(
+async def check_can_update(
         project: CharityProject,
         new_full_amount: int
 ) -> None:
-    if new_full_amount < project.invested_amount:
+    await check_is_active(project)
+    if new_full_amount and new_full_amount < project.invested_amount:
         raise HTTPException(
             status_code=HTTPStatus.BAD_REQUEST,
             detail=(

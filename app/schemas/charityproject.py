@@ -20,11 +20,14 @@ class ProjectUpdate(BaseModel):
 
     @validator('name', 'full_amount')
     def value_cannot_be_none(cls, value):
-        if value is None:
+        if not value or value is None:
             raise ValueError(
-                'value cannot be None'
+                'value cannot be None or empty'
             )
         return value
+
+    class Config:
+        extra = Extra.forbid
 
 
 class ProjectRead(ProjectCreate):

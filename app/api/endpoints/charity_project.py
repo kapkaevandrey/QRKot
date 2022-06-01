@@ -10,7 +10,7 @@ from app.schemas.charityproject import (
 )
 from app.api.validators import (
     check_unique_attribute, check_can_delete_project, check_is_active,
-    try_get_object_by_attribute, check_can_update_full_amount
+    try_get_object_by_attribute, check_can_update
 )
 from app.crud.charityproject import project_crud
 
@@ -55,11 +55,9 @@ async def update_project(
     await check_is_active(project)
     attributes = {}
     await check_unique_attribute(project_crud, 'name', data.name, session)
-    if data.full_amount is not None:
-        await check_can_update_full_amount(project, data.full_amount)
-        if project.invested_amount == data.full_amount:
-            attributes['close_data'] = dt.datetime.now()
-            attributes['fully_invested'] = True
+    await check_can_update(project, data.full_amount)
+    if data.full_amount and project.invested_amount == data.full_amount:
+        await project.deactivate()
     project = await project_crud.update(project, data, session, **attributes)
     return project
 
