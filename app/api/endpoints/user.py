@@ -27,7 +27,7 @@ router.include_router(
 
 
 @router.delete('/users/{id}', tags=['users'], deprecated=True)
-def delete_user(id: int):
+def delete_user(id: str):
     """
     You don't need to delete users,
     just set the value of the is_active field to False.

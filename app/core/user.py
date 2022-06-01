@@ -13,7 +13,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.config import settings
 from app.core.db import get_async_session
 from app.models.user import UserTable
-from app.schemas.user import User, UserCreate, UserUpdate, UserRead
+from app.schemas.user import User, UserCreate, UserUpdate, UserDB
 
 
 ##############################################################################
@@ -23,7 +23,7 @@ def get_jwt_strategy() -> JWTStrategy:
     return JWTStrategy(secret=settings.secret, lifetime_seconds=3600)
 
 
-bearer_transport = BearerTransport(tokenUrl="auth/jwt/login")
+bearer_transport = BearerTransport(tokenUrl='auth/jwt/login')
 auth_backend = AuthenticationBackend(
     name='jwt',
     transport=bearer_transport,
@@ -34,13 +34,13 @@ auth_backend = AuthenticationBackend(
 ##############################################################################
 # User Manager configurations                                                #
 ##############################################################################
-class UserManager(BaseUserManager[UserCreate, UserRead]):
-    user_db_model = UserRead
+class UserManager(BaseUserManager[UserCreate, UserDB]):
+    user_db_model = UserDB
     reset_password_token_secret = settings.secret
     verification_token_secret = settings.secret
 
     async def validate_password(
-            self, password: str, user: Union[UserCreate, UserRead]
+            self, password: str, user: Union[UserCreate, UserDB]
     ) -> None:
         if len(password) < 3:
             raise InvalidPasswordException(
@@ -57,7 +57,7 @@ class UserManager(BaseUserManager[UserCreate, UserRead]):
 ##############################################################################
 # Я думаю это метод должен быть в файле db.py так имеет отношение к базе данных
 async def get_user_db(session: AsyncSession = Depends(get_async_session)):
-    yield SQLAlchemyUserDatabase(UserRead, session, UserTable)
+    yield SQLAlchemyUserDatabase(UserDB, session, UserTable)
 
 
 async def get_user_manager(user_db=Depends(get_user_db)):
@@ -67,12 +67,12 @@ async def get_user_manager(user_db=Depends(get_user_db)):
 # User Configuration                                                         #
 ##############################################################################
 fastapi_users = FastAPIUsers(
-    get_user_manager=get_user_manager,
-    auth_backends=[auth_backend],
-    user_model=User,
-    user_db_model=UserRead,
-    user_create_model=UserCreate,
-    user_update_model=UserUpdate
+    get_user_manager,
+    [auth_backend],
+    User,
+    UserCreate,
+    UserUpdate,
+    UserDB,
 )
 
 current_user = fastapi_users.current_user(active=True)
