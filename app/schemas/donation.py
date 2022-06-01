@@ -13,9 +13,12 @@ class DonationUpdate(BaseModel):
     pass
 
 
-class DonationFullRead(DonationCreate):
+class DonationRead(DonationCreate):
     id: int
     create_date: datetime
+
+
+class DonationFullRead(DonationRead):
     close_date: Optional[datetime]
     user_id: UUID4
     invested_amount: int
@@ -23,9 +26,3 @@ class DonationFullRead(DonationCreate):
 
     class Config:
         orm_mode = True
-
-
-class DonationRead(DonationCreate):
-    id: int
-    create_date: datetime
-
