@@ -71,8 +71,7 @@ async def update_project(
     await check_can_update_project(project, data.full_amount)
     if data.full_amount and project.invested_amount == data.full_amount:
         await project.deactivate()
-    project = await project_crud.update(project, data, session)
-    return project
+    return await project_crud.update(project, data, session)
 
 
 @router.post(
