@@ -3,7 +3,7 @@ from typing import List
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.api.utils import investment_process
+from app.utils.investment import investment_process
 from app.api.validators import (
     check_unique_attribute, check_can_delete_project, check_is_active,
     try_get_object_by_attribute, check_can_update_project,
@@ -19,7 +19,11 @@ from app.schemas.charity_project import (
 router = APIRouter()
 
 
-@router.get('/', response_model=List[ProjectRead])
+@router.get(
+    '/',
+    response_model=List[ProjectRead],
+    response_model_exclude_none=True,
+)
 async def get_all_projects(
         session: AsyncSession = Depends(get_async_session)
 ):
@@ -70,7 +74,7 @@ async def update_project(
     await check_unique_attribute(project_crud, 'name', data.name, session)
     await check_can_update_project(project, data.full_amount)
     if data.full_amount and project.invested_amount == data.full_amount:
-        await project.deactivate()
+        project.deactivate()
     return await project_crud.update(project, data, session)
 
 
@@ -96,5 +100,5 @@ async def create_project(
     )
     project = await project_crud.create(data=data, session=session)
     project_id = project.id
-    await investment_process(session)
+    await investment_process(session, project)
     return await project_crud.get(project_id, session)

@@ -1,5 +1,5 @@
 from typing import (
-    Generic, List, Optional, Type, TypeVar, Union, Collection
+    Generic, List, Optional, TypeVar, Union, Collection
 )
 
 from fastapi.encoders import jsonable_encoder

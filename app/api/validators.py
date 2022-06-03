@@ -35,7 +35,7 @@ async def try_get_object_by_attribute(
             status_code=HTTPStatus.NOT_FOUND,
             detail=(
                 f'{crud_obj.model.__name__} '
-                f'with {attr_name}={attr_value} is not found!'
+                f'с значением {attr_name}={attr_value} не найден!'
             )
         )
     return result
@@ -58,7 +58,7 @@ async def check_can_delete_project(
     if project.invested_amount > 0:
         raise HTTPException(
             status_code=HTTPStatus.UNPROCESSABLE_ENTITY,
-            detail='This project has already received funding'
+            detail='Этот проект уже получил финансирование!'
         )
 
 
@@ -71,8 +71,8 @@ async def check_can_update_project(
         raise HTTPException(
             status_code=HTTPStatus.BAD_REQUEST,
             detail=(
-                f'Yoo cannot reduce the amount of the project '
-                f'below the already invested funds in the amount of '
+                f'Вы не можете установить значение необходимой суммы '
+                f'ниже значения уже инвестированных средств - '
                 f'{project.invested_amount}'
             )
         )

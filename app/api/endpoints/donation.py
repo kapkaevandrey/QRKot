@@ -7,7 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.crud import donation_crud
 from app.core.db import get_async_session
 from app.core.user import current_user, current_superuser
-from app.api.utils import investment_process
+from app.utils.investment import investment_process
 from app.schemas.donation import (
     DonationCreate, DonationFullRead, DonationRead,
 )
@@ -68,5 +68,5 @@ async def create_donation(
     """
     donation = await donation_crud.create(data, session, user_id=user.id)
     donation_id = donation.id
-    await investment_process(session)
+    await investment_process(session, donation)
     return jsonable_encoder(await donation_crud.get(donation_id, session))
