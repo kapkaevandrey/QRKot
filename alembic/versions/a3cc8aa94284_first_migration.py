@@ -1,8 +1,8 @@
 """First migration
 
-Revision ID: e8adc09edf00
+Revision ID: a3cc8aa94284
 Revises:
-Create Date: 2022-06-01 14:27:36.329491
+Create Date: 2022-06-03 18:35:30.432178
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 import fastapi_users_db_sqlalchemy
 
 
-revision = 'e8adc09edf00'
+revision = 'a3cc8aa94284'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -26,9 +26,9 @@ def upgrade():
         sa.Column('create_date', sa.DateTime(), nullable=True),
         sa.Column('close_date', sa.DateTime(), nullable=True),
         sa.Column('name', sa.String(length=100), nullable=False),
-        sa.Column('description', sa.Text(), nullable=True),
+        sa.Column('description', sa.Text(), nullable=False),
         sa.CheckConstraint(
-            'full_amount > 0', name='full_amount_greater_than_zero'
+            'full_amount > 0', name='full_amount_greater_than_zero',
         ),
         sa.PrimaryKeyConstraint('id'),
         sa.UniqueConstraint('name')
@@ -36,7 +36,7 @@ def upgrade():
     op.create_table(
         'user',
         sa.Column(
-            'id', fastapi_users_db_sqlalchemy.guid.GUID(), nullable=False
+            'id', fastapi_users_db_sqlalchemy.guid.GUID(), nullable=False,
         ),
         sa.Column('email', sa.String(length=320), nullable=False),
         sa.Column('hashed_password', sa.String(length=1024), nullable=False),
@@ -54,9 +54,14 @@ def upgrade():
         sa.Column('fully_invested', sa.Boolean(), nullable=True),
         sa.Column('create_date', sa.DateTime(), nullable=True),
         sa.Column('close_date', sa.DateTime(), nullable=True),
-        sa.Column('user_id', fastapi_users_db_sqlalchemy.guid.GUID(), nullable=False),
+        sa.Column(
+            'user_id',
+            fastapi_users_db_sqlalchemy.guid.GUID(), nullable=False,
+        ),
         sa.Column('comment', sa.Text(), nullable=True),
-        sa.CheckConstraint('full_amount > 0', name='full_amount_greater_than_zero'),
+        sa.CheckConstraint(
+            'full_amount > 0', name='full_amount_greater_than_zero',
+        ),
         sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
         sa.PrimaryKeyConstraint('id')
     )
