@@ -4,7 +4,6 @@ from sqlalchemy import (
     Boolean, CheckConstraint, Column, DateTime,
     Integer,
 )
-from sqlalchemy.orm import declared_attr
 
 from app.core.db import Base
 
