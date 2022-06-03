@@ -63,7 +63,7 @@ python3 pip install -r requirments.txt
 Пример заполнения
 ```
 APP_TITLE=QRKot                                 <----название приложения
-DESCRIPTION=application for                     <----описание приложения
+APP_DESCRIPTION=application for                 <----описание приложения
 DATABASE_URL=sqlite+aiosqlite:///./fastapi.db   <---данные для подключения к БД
 FIRST_SUPERUSER_EMAIL=king.arthur@camelot.bt    <---emai суперюзера который будет создан при первой инициалзации БД
 FIRST_SUPERUSER_PASSWORD=guinevere              <---password суперюзера который будет создан при первой инициалзации БД
