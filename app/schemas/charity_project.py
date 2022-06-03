@@ -4,25 +4,28 @@ from typing import Optional
 from pydantic import BaseModel, Extra, Field, PositiveInt, validator
 
 
-class ProjectCreate(BaseModel):
-    name: str = Field(..., min_length=1, max_length=100)
+class ProjectBase(BaseModel):
+    class Config:
+        extra = Extra.forbid
+        min_anystr_length = 1
+
+
+class ProjectCreate(ProjectBase):
+    name: str = Field(..., max_length=100)
     description: str
     full_amount: PositiveInt
 
-    class Config:
-        extra = Extra.forbid
 
-
-class ProjectUpdate(BaseModel):
-    name: Optional[str] = Field(None, min_length=1, max_length=100)
-    description: Optional[str] = Field(None)
+class ProjectUpdate(ProjectBase):
+    name: Optional[str] = Field(None, max_length=100)
+    description: Optional[str]
     full_amount: Optional[PositiveInt]
 
     @validator('name', 'full_amount')
-    def value_cannot_be_none(cls, value, field):
+    def value_cannot_be_none(cls, value):
         if not value or value is None:
             raise ValueError(
-                'Value cannot be None'
+                'Значение не может быть равно null'
             )
         return value
 

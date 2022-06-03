@@ -16,13 +16,13 @@
 Сервис для сбора средств на реализацию различных проектов для наших милых котиков.
 
 ### _Технологии_
- - _[Python 3.10.1](https://docs.python.org/3/)_
- - _[Fast API 0.73](https://fastapi.tiangolo.com/)_
- - _[FastAPI Users 9.3](https://fastapi-users.github.io/fastapi-users/9.3/)_
- - _[SQLAlchemy 1.4.37](https://www.sqlalchemy.org/)_
- - _[Alembic 1.8.0](https://alembic.sqlalchemy.org/en/latest/)_
- - _[Pydantic 1.9.0](https://alembic.sqlalchemy.org/en/latest/)_
- - _[Uvicron 0.17.6](https://www.uvicorn.org/)_
+ - __[Python 3.10.1](https://docs.python.org/3/)__
+ - __[Fast API 0.73](https://fastapi.tiangolo.com/)__
+ - __[FastAPI Users 9.3](https://fastapi-users.github.io/fastapi-users/9.3/)__
+ - __[SQLAlchemy 1.4.37](https://www.sqlalchemy.org/)__
+ - __[Alembic 1.8.0](https://alembic.sqlalchemy.org/en/latest/)__
+ - __[Pydantic 1.9.0](https://alembic.sqlalchemy.org/en/latest/)__
+ - __[Uvicron 0.17.6](https://www.uvicorn.org/)__
 
 ## _Как запустить проект_:
 ________________________________________

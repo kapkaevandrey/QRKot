@@ -11,7 +11,7 @@ from app.api.validators import (
 from app.crud import project_crud
 from app.core.db import get_async_session
 from app.core.user import current_superuser
-from app.schemas.charityproject import (
+from app.schemas.charity_project import (
     ProjectCreate, ProjectUpdate, ProjectRead,
 )
 
