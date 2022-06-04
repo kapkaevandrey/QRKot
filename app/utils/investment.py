@@ -15,14 +15,14 @@ async def investment_process(
         order_by='create_date', many=True,
     )
     if isinstance(invest_object, Donation):
-        invest_object_crud = donation_crud
         iter_crud = project_crud
     elif isinstance(invest_object, CharityProject):
-        invest_object_crud = project_crud
         iter_crud = donation_crud
     else:
-        raise TypeError('Переданный объект не является'
-                        'экземпляром класса CharityProject или Donation')
+        raise TypeError(
+            'Переданный объект не является'
+            'экземпляром класса CharityProject или Donation'
+        )
     iter_objects = await iter_crud.get_by_attribute(
         session=session, **request,
     )
@@ -39,5 +39,7 @@ async def investment_process(
             obj.deactivate()
         if remain >= 0:
             break
-    await invest_object_crud.save(invest_object, session)
-    await iter_crud.save(iter_objects, session, many=True)
+    commit_objects = (invest_object, *iter_objects)
+    session.add_all(commit_objects)
+    await session.commit()
+    [await session.refresh(obj) for obj in commit_objects]

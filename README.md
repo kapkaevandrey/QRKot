@@ -54,12 +54,13 @@ python3 -m pip install --upgrade pip
 ```
 
 ```bash
-python3 pip install -r requirments.txt
+python3 pip install -r requirements.txt
 ```
 ☑️**_Примечание_**: если вы используете Windows то библиотека **[uvloop](https://uvloop.readthedocs.io/)** не установиться.
 Вы можете установить её, используя систему **[WSL](https://docs.microsoft.com/en-us/windows/wsl/install)**.
 
-Заполните файл .env, предварительно создав его в главной директории проекта.
+Заполните файл .env, предварительно создав его в главной директории проекта. Для примера в директории проекта есть файл ```example.env```
+
 Пример заполнения
 ```
 APP_TITLE=QRKot                                 <----название приложения
@@ -111,6 +112,54 @@ _______________________________________________________
 5. Редактировать проекты;
 6. Просматривать все пожертвования.
 
+### _Регистрация и получение токена_:
+______________________________________
+#### _Регистрация нового пользователя_:
+>```/auth/register```
+>
+>Payload
+>```json
+>{
+>"username": "MikeWazowski@monsters.inc",
+>"password": "JamesP.Sullivan"
+>}
+>```
+>Response sample (status code = 201)
+>```json
+>{
+>"id": "3370b7f9-9cfd-4689-9ae3-11de51e28b70",
+>"email": "MikeWazowski@monsters.inc",
+>"is_active": true,
+>"is_superuser": false,
+>"is_verified": false
+>}
+>```
+#### _Получение JWT токена_:
+Получить токен вы можете используя **POST** с ```data``` содержащим поля ```username``` и ```password```
+>```/auth/jwt/login```
+>
+>Пример запроса с использованием библиотеки requests
+>```python
+>import requests
+>
+>data = {
+>    'username': 'MikeWazowski@monsters.inc',
+>    'password': 'JamesP.Sullivan'
+>}
+>
+>data = requests.post(
+>    'http://127.0.0.1:8000/auth/jwt/login',
+>    data=data
+>)
+>```
+>Response sample (status code = 200) ```data.json()```
+> ```json lines
+> {
+> "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoiMzM3MGI3ZjktOWNmZC00Njg5LTlhZTMtMTFkZTUxZTI4YjcwIiwiYXVkIjpbImZhc3RhcGktdXNlcnM6YXV0aCJdLCJleHAiOjE2NTQzNzExMzR9.ZmyiCND1aH2x0d29tFgn3inlF_Fmi2tywMVJLZgt2BM",
+> "token_type": "bearer"
+> }
+
+
 ### _Примеры запросов_:
 _________________________________
 Здесь могли быть примеры запросов, но они гораздо лучше описаны в сгенерированной документации. 
@@ -120,7 +169,6 @@ _________________________________
 [host/redoc]() - Redoc
 
 При локальном запуске http://127.0.0.1:8000/docs
-
 
 
 ________________________________
